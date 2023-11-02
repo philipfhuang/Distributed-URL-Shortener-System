@@ -1,9 +1,15 @@
-from flask import Flask, request, redirect
 import redis
-import cassandra
+from cassandra.cluster import Cluster
+from flask import Flask, request, redirect
+
 
 app = Flask(__name__)
-r = redis.Redis()
+# TODO: Need to change the IP address to the IP address of the Redis container
+r = redis.Redis(host='redis-primary', port=6379)
+# TODO: Need to change the IP address to the IP address of the Cassandra container
+cluster = Cluster(['127.0.0.1'])
+# TODO: Need to change the keyspace to the keyspace of the Cassandra container
+session = cluster.connect('urlshortener')
 
 
 @app.route('/')
@@ -11,18 +17,18 @@ def save_long_url(long_url):
     short_url = request.args.get('short')
     long_url = request.args.get('long')
     r.set(short_url, long_url)
-    # TODO: Should we save in Cassandra right now or later?
-
-    return
+    session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
+    return 'OK'
 
 
 @app.route('/<short_url>', methods=['GET'])
 def redirect_url(short_url):
     long_url = r.get(short_url)
 
-    # TODO: Find in Cassandra if not in Redis
     if not long_url:
-        pass
+        rows = session.execute("SELECT long_url FROM urls WHERE short_url = %s", (short_url,))
+        long_url = rows.long_url
+        r.set(short_url, long_url)
 
     return redirect(long_url, code=307)
 
