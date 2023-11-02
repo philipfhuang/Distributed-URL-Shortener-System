@@ -1,0 +1,24 @@
+version: '3'
+services:
+
+  nginx:
+      build: nginx/
+      ports:
+        - "8082:80"
+      depends_on:
+        - request-handler
+
+  redis:
+    build: redis/
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  url-handler:
+    build: url-handler/
+      ports:
+        - "5000:5000"
+      depends_on:
+        - cassandra
+        - redis
