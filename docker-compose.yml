@@ -14,6 +14,8 @@ services:
     volumes:
       - /home/student/election2022/data:/redis_data
     deploy:
+      restart_policy:
+        condition: on-failure
       placement:
         constraints: [node.role == primary]
 
@@ -23,6 +25,8 @@ services:
     volumes:
       - /home/student/election2022/data:/redis_data
     deploy:
+      restart_policy:
+        condition: on-failure
       placement:
         constraints: [node.role == replica]
 

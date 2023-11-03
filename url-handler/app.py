@@ -13,7 +13,7 @@ cluster = Cluster(['127.0.0.1'])
 session = cluster.connect('urlshortener')
 
 
-@app.route('/')
+@app.route('/', methods=['POST', 'PUT'])
 def save_long_url(long_url):
     short_url = request.args.get('short')
     long_url = request.args.get('long')
