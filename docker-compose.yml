@@ -15,7 +15,7 @@ services:
       - /home/student/election2022/data:/redis_data
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: always
       placement:
         constraints: [node.role == primary]
 
