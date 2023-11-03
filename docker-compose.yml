@@ -2,8 +2,8 @@ version: '3'
 services:
 
   nginx:
-      image: nginx:1.25.3
-      container_name: my_nginx_container
+      build: ./nginx/
+      container_name: nginx
       ports:
         - "8080:8080"
       volumes:
@@ -15,6 +15,7 @@ services:
 
   redis-primary:
     image: redis:7.2.2
+    container_name: redis-primary
     command: redis-server --appendonly yes --maxmemory 8mb --maxmemory-policy allkeys-lru
     volumes:
       - /home/student/election2022/data:/redis_data
@@ -25,6 +26,7 @@ services:
 
   redis-replica:
     image: redis:7.2.2
+    container_name: redis-replica
     command: redis-server --replicaof redis-primary 6379
     volumes:
       - /home/student/election2022/data:/redis_data
@@ -35,6 +37,7 @@ services:
 
   url-handler:
     build: ./url-handler/
+    container_name: url-handler
     restart: always
     deploy:
       placement:
