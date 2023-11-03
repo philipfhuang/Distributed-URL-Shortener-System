@@ -1,24 +1,36 @@
 version: '3'
 services:
 
-  nginx:
-      build: nginx/
-      ports:
-        - "8082:80"
-      depends_on:
-        - request-handler
+#  nginx:
+#    build: nginx/
+#    ports:
+#      - "8081:80"
+#    depends_on:
+#      - url-handler
 
-  redis:
-    build: redis/
-    ports:
-      - "6379:6379"
+  redis-primary:
+    image: "redis:7.2.2"
+    command: redis-server --appendonly yes --maxmemory 8mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == primary
+
+  redis-replica:
+    image: "redis:7.2.2"
+    command: redis-server --replicaof redis-primary 6379
+    volumes:
+      - redis_data:/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == replica
 
   url-handler:
     build: url-handler/
-      ports:
-        - "5000:5000"
-      depends_on:
-        - cassandra
-        - redis
+    ports:
+      - "8080:5000"
+    depends_on:
+      - redis-primary
