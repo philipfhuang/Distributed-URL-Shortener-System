@@ -8,9 +8,8 @@ services:
         - "8080:8080"
       volumes:
         - ./nginx/nginx.conf:ro
+      restart: always
       deploy:
-        restart_policy:
-          condition: always
         placement:
           constraints: [node.role == manager]
 
@@ -30,17 +29,15 @@ services:
     command: redis-server --replicaof redis-primary 6379
     volumes:
       - /home/student/election2022/data:/redis_data
+    restart: always
     deploy:
-      restart_policy:
-        condition: always
       placement:
         constraints: [node.role == worker]
 
   url-handler:
     build: url-handler/
+    restart: always
     deploy:
-      restart_policy:
-        condition: always
       placement:
         constraints: [node.role == worker]
     ports:
