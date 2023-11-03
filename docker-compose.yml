@@ -42,7 +42,5 @@ services:
     deploy:
       placement:
         constraints: [node.role == worker]
-    ports:
-      - "8080:5000"
     depends_on:
       - redis-primary
