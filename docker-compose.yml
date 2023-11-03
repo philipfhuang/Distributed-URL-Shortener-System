@@ -2,7 +2,7 @@ version: '3'
 services:
 
   nginx:
-      image: nginx:latest
+      image: nginx:1.25.3
       container_name: my_nginx_container
       ports:
         - "8080:8080"
@@ -14,7 +14,7 @@ services:
           constraints: [node.role == manager]
 
   redis-primary:
-    image: "redis:7.2.2"
+    image: redis:7.2.2
     command: redis-server --appendonly yes --maxmemory 8mb --maxmemory-policy allkeys-lru
     volumes:
       - /home/student/election2022/data:/redis_data
@@ -24,7 +24,7 @@ services:
         constraints: [node.role == manager]
 
   redis-replica:
-    image: "redis:7.2.2"
+    image: redis:7.2.2
     command: redis-server --replicaof redis-primary 6379
     volumes:
       - /home/student/election2022/data:/redis_data
@@ -34,7 +34,7 @@ services:
         constraints: [node.role == worker]
 
   url-handler:
-    build: url-handler/
+    build: ./url-handler/
     restart: always
     deploy:
       placement:
