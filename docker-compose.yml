@@ -18,9 +18,8 @@ services:
     command: redis-server --appendonly yes --maxmemory 8mb --maxmemory-policy allkeys-lru
     volumes:
       - /home/student/election2022/data:/redis_data
+    restart: always
     deploy:
-      restart_policy:
-        condition: always
       placement:
         constraints: [node.role == manager]
 
