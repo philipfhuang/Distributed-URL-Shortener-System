@@ -1,12 +1,18 @@
 version: '3'
 services:
 
-#  nginx:
-#    build: nginx/
-#    ports:
-#      - "8081:80"
-#    depends_on:
-#      - url-handler
+  nginx:
+      image: nginx:latest
+      container_name: my_nginx_container
+      ports:
+        - "8080:8080"
+      volumes:
+        - ./nginx/nginx.conf:ro
+      deploy:
+        restart_policy:
+          condition: always
+        placement:
+          constraints: [node.role == manager]
 
   redis-primary:
     image: "redis:7.2.2"
@@ -17,7 +23,7 @@ services:
       restart_policy:
         condition: always
       placement:
-        constraints: [node.role == primary]
+        constraints: [node.role == manager]
 
   redis-replica:
     image: "redis:7.2.2"
@@ -26,15 +32,17 @@ services:
       - /home/student/election2022/data:/redis_data
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: always
       placement:
-        constraints: [node.role == replica]
+        constraints: [node.role == worker]
 
   url-handler:
     build: url-handler/
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: always
+      placement:
+        constraints: [node.role == worker]
     ports:
       - "8080:5000"
     depends_on:
