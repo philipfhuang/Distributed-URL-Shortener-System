@@ -12,24 +12,25 @@ services:
     image: "redis:7.2.2"
     command: redis-server --appendonly yes --maxmemory 8mb --maxmemory-policy allkeys-lru
     volumes:
-      - redis_data:/data
+      - /home/student/election2022/data:/redis_data
     deploy:
       placement:
-        constraints:
-          - node.labels.redis == primary
+        constraints: [node.role == primary]
 
   redis-replica:
     image: "redis:7.2.2"
     command: redis-server --replicaof redis-primary 6379
     volumes:
-      - redis_data:/data
+      - /home/student/election2022/data:/redis_data
     deploy:
       placement:
-        constraints:
-          - node.labels.redis == replica
+        constraints: [node.role == replica]
 
   url-handler:
     build: url-handler/
+    deploy:
+      restart_policy:
+        condition: on-failure
     ports:
       - "8080:5000"
     depends_on:
