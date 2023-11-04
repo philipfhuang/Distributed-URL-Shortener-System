@@ -41,6 +41,7 @@ services:
     container_name: url-handler
     restart: always
     deploy:
+      replicas: 3
       placement:
         constraints: [node.role == worker]
     depends_on:
