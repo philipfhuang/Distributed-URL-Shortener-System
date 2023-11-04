@@ -37,7 +37,7 @@ services:
         constraints: [node.role == worker]
 
   url-handler:
-    image: sjwsteven/url-handler:latest
+    image: sjwsteven/url-handler:no-cassandra
     container_name: url-handler
     restart: always
     deploy:
