@@ -1,0 +1,1 @@
+LAST_OCTSET=$(ifconfig | grep -oE '10\.128\.[0-9]\.[0-9]+' | awk -F'.' '{print $NF}')
