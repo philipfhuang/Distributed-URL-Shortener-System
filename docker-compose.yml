@@ -39,6 +39,8 @@ services:
   url-handler:
     image: sjwsteven/url-handler:no-cassandra
     container_name: url-handler
+    ports:
+      - "5000:5000"
     restart: always
     deploy:
       replicas: 3
