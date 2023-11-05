@@ -14,7 +14,7 @@ slave = Redis(host='redis-replica', port=6379)
 
 
 @app.route('/', methods=['POST', 'PUT'])
-def save_long_url(long_url):
+def save_long_url():
     short_url = request.args.get('short')
     long_url = request.args.get('long')
 
