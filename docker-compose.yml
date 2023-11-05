@@ -22,12 +22,15 @@ services:
     deploy:
       placement:
         constraints: [node.role == worker]
+    depends_on:
+      - redis-primary
 
   url-handler:
-    image: sjwsteven/url-handler:no-cassandra
+    image: sjwsteven/url-handler:latest
     container_name: url-handler
     ports:
       - "8080:5000"
     restart: always
     depends_on:
       - redis-primary
+      - redis-replica

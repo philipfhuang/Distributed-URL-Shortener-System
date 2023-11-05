@@ -7,10 +7,10 @@ app = Flask(__name__)
 master = Redis(host='redis-primary', port=6379)
 slave = Redis(host='redis-replica', port=6379)
 
-# # TODO: Need to change the IP address to the IP address of the Cassandra container
-# cluster = Cluster(['127.0.0.1'])
-# # TODO: Need to change the keyspace to the keyspace of the Cassandra container
-# session = cluster.connect('urlshortener')
+# TODO: Need to change the IP address to the IP address of the Cassandra container
+cluster = Cluster(['10.128.1.42', '10.128.2.42', '10.128.3.42'])
+# TODO: Need to change the keyspace to the keyspace of the Cassandra container
+session = cluster.connect('urlshortener')
 
 
 @app.route('/', methods=['POST', 'PUT'])
@@ -22,7 +22,7 @@ def save_long_url():
         return 'bad request', 400
 
     master.set(short_url, long_url)
-    # session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
+    session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
     return '', 200
 
 
@@ -30,13 +30,13 @@ def save_long_url():
 def redirect_url(short_url):
     long_url = slave.get(short_url)
 
-    # if not long_url:
-    #     rows = session.execute("SELECT long_url FROM urls WHERE short_url = %s", (short_url,))
-    #     long_url = rows.long_url
-    #     master.set(short_url, long_url)
-    #
-    #     if not long_url:
-    #         abort(404, description='page not found')
+    if not long_url:
+        rows = session.execute("SELECT long_url FROM urls WHERE short_url = %s", (short_url,))
+        long_url = rows.long_url
+        master.set(short_url, long_url)
+
+        if not long_url:
+            abort(404, description='page not found')
 
     return redirect(long_url, code=307)
 
