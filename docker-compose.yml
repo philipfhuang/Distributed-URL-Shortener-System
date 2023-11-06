@@ -40,7 +40,7 @@ services:
   url-handler:
     image: sjwsteven/url-handler:latest
     ports:
-      - "8080:5000"
+      - "8081:5000"
     deploy:
       restart_policy:
         condition: on-failure
@@ -53,3 +53,13 @@ services:
       timeout: 5s
       retries: 2
       start_period: 10s
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [ node.role == manager ]
