@@ -24,6 +24,11 @@ def save_long_url():
     return '', 200
 
 
+@app.route('/', methods=['GET'])
+def invalid_method():
+    return 'method not allowed', 405
+
+
 @app.route('/<short_url>', methods=['GET'])
 def redirect_url(short_url):
     long_url = slave.get(short_url)
