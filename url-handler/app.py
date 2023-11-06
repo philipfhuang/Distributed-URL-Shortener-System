@@ -31,7 +31,7 @@ def redirect_url(short_url):
     long_url = slave.get(short_url)
 
     if not long_url:
-        rows = session.execute("SELECT long_url FROM urls WHERE short_url = %s", (short_url,))
+        rows = session.execute("SELECT long_url FROM urls WHERE short_url = '%s'", (short_url,))
         long_url = rows.long_url
         master.set(short_url, long_url)
 
