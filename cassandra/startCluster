@@ -28,5 +28,5 @@ while (( "$#" )); do
 	shift
 done
 
-ssh student@$MASTER "docker cp init.cql cassandra-node:./init.cql"
+ssh student@$MASTER "docker cp ~/a2group88/cassandra/init.cql cassandra-node:./init.cql"
 ssh student@$MASTER "docker exec -it cassandra-node cqlsh -f /init.cql"
