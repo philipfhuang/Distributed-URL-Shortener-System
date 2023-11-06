@@ -19,12 +19,16 @@ def save_long_url():
     if not short_url or not long_url:
         return 'bad request', 400
     
+    redis_down = False
     try:
         master.set(short_url, long_url)
     except Exception:
-        pass
-
-    session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
+        redis_down = True
+    try:
+        session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
+    except Exception:
+        if redis_down:
+            return 'page not found', 404
     return '', 200
 
 
@@ -35,13 +39,19 @@ def invalid_method():
 
 @app.route('/<short_url>', methods=['GET'])
 def redirect_url(short_url):
+    redis_down = False
     try:
         long_url = slave.get(short_url)
     except Exception:
         long_url = None
+        redis_down = True
 
     if not long_url:
-        rows = session.execute("SELECT long_url FROM urls WHERE short_url = %s", (short_url,))
+        try:
+            rows = session.execute("SELECT long_url FROM urls WHERE short_url = %s", (short_url,))
+        except Exception:
+            if redis_down:
+                return 'page not found', 404
 
         if not rows:
             return 'page not found', 404
