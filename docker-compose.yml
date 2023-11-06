@@ -3,23 +3,23 @@ services:
 
   redis-primary:
     image: redis:7.2.2
-    container_name: redis-primary
     command: redis-server --appendonly yes --maxmemory 8mb --maxmemory-policy allkeys-lru
     volumes:
       - ~/data/redis:/data
-    restart: always
     deploy:
+      restart_policy:
+        condition: none
       placement:
         constraints: [node.role == manager]
 
   redis-replica:
     image: redis:7.2.2
-    container_name: redis-replica
     command: redis-server --replicaof redis-primary 6379
     volumes:
       - ~/data/redis:/data
-    restart: always
     deploy:
+      restart_policy:
+        condition: none
       placement:
         constraints: [node.role == worker]
     depends_on:
@@ -27,10 +27,11 @@ services:
 
   url-handler:
     image: sjwsteven/url-handler:latest
-    container_name: url-handler
     ports:
       - "8080:5000"
-    restart: always
+    deploy:
+      restart_policy:
+        condition: none
     depends_on:
       - redis-primary
       - redis-replica
