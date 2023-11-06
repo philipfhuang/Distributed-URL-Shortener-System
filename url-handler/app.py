@@ -8,7 +8,10 @@ master = Redis(host='redis-primary', port=6379)
 slave = Redis(host='redis-replica', port=6379)
 
 cluster = Cluster(['10.128.1.42', '10.128.2.42', '10.128.3.42'])
-session = cluster.connect('urlshortener')
+try:
+    session = cluster.connect('urlshortener')
+except Exception:
+    session = None
 
 
 @app.route('/', methods=['PUT'])

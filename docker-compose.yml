@@ -35,3 +35,9 @@ services:
     depends_on:
       - redis-primary
       - redis-replica
+    healthcheck:
+      test: curl --fail http://localhost:5000/sid
+      interval: 5s
+      retries: 2
+      start_period: 20s
+      timeout: 5s
