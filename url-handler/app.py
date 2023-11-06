@@ -33,10 +33,11 @@ def redirect_url(short_url):
     if not long_url:
         rows = session.execute("SELECT long_url FROM urls WHERE short_url = '%s'", (short_url,))
         long_url = rows[0].long_url
-        master.set(short_url, long_url)
 
         if not long_url:
             abort(404, description='page not found')
+
+        master.set(short_url, long_url)
 
     return redirect(long_url, code=307)
 
