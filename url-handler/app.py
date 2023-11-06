@@ -18,8 +18,12 @@ def save_long_url():
 
     if not short_url or not long_url:
         return 'bad request', 400
-
-    master.set(short_url, long_url)
+    
+    try:
+        master.set(short_url, long_url)
+    except Exception:
+        pass
+    
     session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
     return '', 200
 
@@ -31,7 +35,10 @@ def invalid_method():
 
 @app.route('/<short_url>', methods=['GET'])
 def redirect_url(short_url):
-    long_url = slave.get(short_url)
+    try:
+        long_url = slave.get(short_url)
+    except Exception:
+        long_url = None
 
     if not long_url:
         rows = session.execute("SELECT long_url FROM urls WHERE short_url = %s", (short_url,))
