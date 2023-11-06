@@ -8,7 +8,7 @@ services:
       - ~/data/redis:/data
     deploy:
       restart_policy:
-        condition: none
+        condition: on-failure
       placement:
         constraints: [node.role == manager]
 
@@ -19,7 +19,7 @@ services:
       - ~/data/redis:/data
     deploy:
       restart_policy:
-        condition: none
+        condition: on-failure
       placement:
         constraints: [node.role == worker]
     depends_on:
@@ -31,13 +31,13 @@ services:
       - "8080:5000"
     deploy:
       restart_policy:
-        condition: none
+        condition: on-failure
     depends_on:
       - redis-primary
       - redis-replica
     healthcheck:
-      test: curl --fail http://localhost:5000/sid
+      test: ["CMD", "curl", "-s", "http://localhost:5000/health"]
       interval: 5s
-      retries: 2
-      start_period: 20s
       timeout: 5s
+      retries: 2
+      start_period: 40s
