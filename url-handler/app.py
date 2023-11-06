@@ -11,7 +11,7 @@ cluster = Cluster(['10.128.1.42', '10.128.2.42', '10.128.3.42'])
 session = cluster.connect('urlshortener')
 
 
-@app.route('/', methods=['POST', 'PUT'])
+@app.route('/', methods=['PUT'])
 def save_long_url():
     short_url = request.args.get('short')
     long_url = request.args.get('long')
@@ -23,7 +23,7 @@ def save_long_url():
         master.set(short_url, long_url)
     except Exception:
         pass
-    
+
     session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
     return '', 200
 
@@ -47,7 +47,10 @@ def redirect_url(short_url):
             return 'page not found', 404
 
         long_url = rows[0].long_url
-        master.set(short_url, long_url)
+        try:
+            master.set(short_url, long_url)
+        except Exception:
+            pass
 
     return redirect(long_url, code=307)
 
