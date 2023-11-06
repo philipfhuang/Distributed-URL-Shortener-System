@@ -11,6 +11,12 @@ services:
         condition: on-failure
       placement:
         constraints: [node.role == manager]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
 
   redis-replica:
     image: redis:7.2.2
@@ -24,6 +30,12 @@ services:
         constraints: [node.role == worker]
     depends_on:
       - redis-primary
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
 
   url-handler:
     image: sjwsteven/url-handler:latest
