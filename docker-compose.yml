@@ -36,8 +36,8 @@ services:
       - redis-primary
       - redis-replica
     healthcheck:
-      test: ["CMD", "curl", "-s", "http://localhost:5000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 5s
       timeout: 5s
       retries: 2
-      start_period: 40s
+      start_period: 10s
