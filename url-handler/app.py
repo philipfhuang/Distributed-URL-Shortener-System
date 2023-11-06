@@ -26,7 +26,7 @@ def save_long_url():
 
 @app.route('/', methods=['GET'])
 def invalid_method():
-    return 'method not allowed', 405
+    return 'bad request', 400
 
 
 @app.route('/<short_url>', methods=['GET'])
@@ -37,7 +37,7 @@ def redirect_url(short_url):
         rows = session.execute("SELECT long_url FROM urls WHERE short_url = %s", (short_url,))
 
         if not rows:
-            abort(404, description='page not found')
+            return 'page not found', 404
 
         long_url = rows[0].long_url
         master.set(short_url, long_url)
