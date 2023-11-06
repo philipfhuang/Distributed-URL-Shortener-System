@@ -7,9 +7,7 @@ app = Flask(__name__)
 master = Redis(host='redis-primary', port=6379)
 slave = Redis(host='redis-replica', port=6379)
 
-# TODO: Need to change the IP address to the IP address of the Cassandra container
 cluster = Cluster(['10.128.1.42', '10.128.2.42', '10.128.3.42'])
-# TODO: Need to change the keyspace to the keyspace of the Cassandra container
 session = cluster.connect('urlshortener')
 
 
