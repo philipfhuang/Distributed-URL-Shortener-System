@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Docker Node Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #nodesTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #nodesTable th {
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            padding: 12px;
+        }
+
+        #nodesTable th,
+        #nodesTable td {
+            border: 1px solid #ccc;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 8px;
+        }
+
+        #nodesTable tbody tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+
+        .status-up .status-unhealthy .status-other {
+            display: block;
+        }
+
+        .status-up {
+            background-color: green;
+        }
+
+        .status-unhealthy {
+            background-color: #F7C600 !important;
+        }
+
+        .status-other {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <table id="nodesTable">
+        <thead>
+        <tr>
+            <th>NODE ID</th>
+            <th>CONTAINER ID</th>
+            <th>IMAGE</th>
+            <th>COMMAND</th>
+            <th>CREATED</th>
+            <th>STATUS</th>
+            <th>PORTS</th>
+        </tr>
+        </thead>
+        <tbody id="nodesInfo"></tbody>
+    </table>
+</main>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        getNodeInfo(); // Fetch initially
+        setInterval(getNodeInfo, 5000); // Fetch every 5 seconds
+    });
+
+    function getNodeInfo() {
+        fetch('/get_docker_nodes') // Replace this with your actual endpoint to get Docker node info from the backend
+            .then(response => response.json())
+            .then(data => updateNodesTable(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function updateNodesTable(nodes) {
+        const nodesInfoContainer = document.getElementById('nodesInfo');
+        nodesInfoContainer.innerHTML = ''; // Clear previous content
+
+        nodes.forEach(node => {
+            const row = document.createElement('tr');
+            Object.keys(node).forEach(key => {
+                const cell = document.createElement('td');
+                cell.textContent = node[key];
+                if (key === 'status') {
+                    const statusValue = node[key].toLowerCase();
+                    console.log(statusValue);
+                    if (statusValue.includes('unhealthy')) {
+                        cell.classList.add('status-unhealthy');
+                    } else if (statusValue.includes('up')) {
+                        cell.classList.add('status-up');
+                    } else {
+                        cell.classList.add('status-other');
+                    }
+                }
+                row.appendChild(cell);
+            });
+            nodesInfoContainer.appendChild(row);
+        });
+    }
+</script>
+</body>
+</html>
