@@ -1,0 +1,74 @@
+version: '3'
+services:
+
+  redis-primary:
+    image: redis:7.2.2
+    command: redis-server --appendonly yes --maxmemory 8mb --maxmemory-policy allkeys-lru
+    volumes:
+      - ~/data/redis:/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
+
+  redis-replica:
+    image: redis:7.2.2
+    command: redis-server --replicaof redis-primary 6379
+    volumes:
+      - ~/data/redis:/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+    depends_on:
+      - redis-primary
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
+
+  worker:
+    image: sjwsteven/url-handler:worker
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - redis-primary
+
+  fast-handler:
+    image: sjwsteven/url-handler:fast
+    ports:
+      - "8081:5000"
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - redis-primary
+      - redis-replica
+      - worker
+    healthcheck:
+      test: ["CMD", "curl", "-s", "http://localhost:5000/"]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [ node.role == manager ]
