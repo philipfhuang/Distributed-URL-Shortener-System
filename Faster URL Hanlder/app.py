@@ -1,6 +1,6 @@
 from redis import Redis
 from cassandra.cluster import Cluster
-from flask import Flask, request, redirect, abort
+from flask import Flask, request, redirect
 
 
 app = Flask(__name__)
@@ -21,18 +21,14 @@ def save_long_url():
 
     if not short_url or not long_url:
         return 'bad request', 400
-    
-    redis_down = False
+
     try:
         master.set(short_url, long_url)
-    except Exception:
-        redis_down = True
-    try:
-        session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
-    except Exception:
-        if redis_down:
-            return 'page not found', 404
-    return '', 200
+        master.xadd('url_stream', {'short_url': short_url, 'long_url': long_url})
+        return 'Accepted', 202
+    except Exception as e:
+        app.logger.error(f"Failed to add to stream: {e}")
+        return 'Internal Server Error', 500
 
 
 @app.route('/', methods=['GET'])

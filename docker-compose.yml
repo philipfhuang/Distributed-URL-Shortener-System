@@ -38,7 +38,7 @@ services:
       start_period: 10s
 
   url-handler:
-    image: sjwsteven/url-handler:latest
+    image: sjwsteven/url-handler:classic
     ports:
       - "8081:5000"
     deploy:
