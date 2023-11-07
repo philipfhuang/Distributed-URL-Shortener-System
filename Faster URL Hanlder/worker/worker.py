@@ -13,11 +13,23 @@ except Exception:
 stream_name = 'url_stream'
 group_name = 'url_group'
 
-try:
-    master.xgroup_create(stream_name, group_name, id='0', mkstream=True)
-except redis.exceptions.ResponseError as e:
-    if "BUSYGROUP Consumer Group name already exists" in str(e):
-        print("Consumer group already exists.")
-    else:
-        raise e
+master.xgroup_create(stream_name, group_name, id='0', mkstream=True)
 
+
+def process_messages():
+    while True:
+        try:
+            messages = master.xreadgroup(group_name, 'consumer', {stream_name: '>'}, count=5, block=1000)
+            for message in messages:
+                msg_id, data = message
+                short_url = data['short_url']
+                long_url = data['long_url']
+
+                session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
+                master.xack(stream_name, group_name, msg_id)
+        except Exception:
+            pass
+
+
+if __name__ == '__main__':
+    process_messages()
