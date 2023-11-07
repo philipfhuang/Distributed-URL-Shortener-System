@@ -13,7 +13,13 @@ except Exception:
 stream_name = 'url_stream'
 group_name = 'url_group'
 
-master.xgroup_create(stream_name, group_name, id='0', mkstream=True)
+try:
+    master.xgroup_create(stream_name, group_name, id='0', mkstream=True)
+except redis.exceptions.ResponseError as e:
+    if "BUSYGROUP Consumer Group name already exists" in str(e):
+        print("Consumer group already exists.")
+    else:
+        raise e
 
 
 def process_messages():
