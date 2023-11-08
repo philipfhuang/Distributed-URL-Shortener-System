@@ -13,7 +13,7 @@ def get_docker_nodes():
         try:
             output = subprocess.check_output(f"ssh {ip} 'docker ps -a --format json --no-trunc'", shell=True, stderr=subprocess.STDOUT, text=True, timeout=5)
             node = subprocess.check_output(f"ssh {ip} 'hostname'", shell=True, stderr=subprocess.STDOUT, text=True, timeout=5)
-        except subprocess.TimeoutExpired:
+        except Exception:
             nodes_info.append({
                 "Node": ip,
                 "Info": [],
