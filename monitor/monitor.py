@@ -15,7 +15,7 @@ def get_docker_nodes():
             node = subprocess.check_output(f"ssh {ip} 'hostname'", shell=True, stderr=subprocess.STDOUT, text=True, timeout=5)
         except subprocess.TimeoutExpired:
             nodes_info.append({
-                "Node": node.strip(),
+                "Node": ip,
                 "Info": [],
                 "Message": "Time out",
             })
