@@ -1,13 +1,14 @@
 from flask import Flask, render_template, jsonify
 import json
 import subprocess
+import sys
 
 app = Flask(__name__)
 
 @app.route('/get_docker_nodes')
 def get_docker_nodes():
     nodes_info = []
-    ips = ["10.128.1.42", "10.128.2.42", "10.128.3.42", "10.128.4.42"]
+    ips = sys.argv[1:]
     for ip in ips:
         try:
             output = subprocess.check_output(f"ssh {ip} 'docker ps -a --format json --no-trunc'", shell=True, stderr=subprocess.STDOUT, text=True, timeout=5)
