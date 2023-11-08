@@ -33,4 +33,7 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Usage: python3 monitor.py <ip1> <ip2> ...")
+        exit(1)
     app.run(debug=True, port=8080, host='0.0.0.0')
