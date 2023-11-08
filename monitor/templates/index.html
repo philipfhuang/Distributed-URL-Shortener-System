@@ -19,6 +19,15 @@
         th {
             background-color: #f2f2f2;
         }
+        .green {
+            background-color: #8BC34A;
+        }
+        .yellow {
+            background-color: #FFEB3B;
+        }
+        .red {
+            background-color: #EF5350;
+        }
     </style>
 </head>
 <body>
@@ -73,6 +82,16 @@ function updateTable(dataList) {
                 for (var key in info) {
                     var cell = row.insertCell();
                     cell.textContent = info[key];
+
+                    if (key === "Status") {
+                        if (info[key].includes("Up")) {
+                            cell.classList.add("green");
+                        } else if (info[key].includes("unhealthy")) {
+                            cell.classList.add("yellow");
+                        } else {
+                            cell.classList.add("red");
+                        }
+                    }
                 }
             });
         });
