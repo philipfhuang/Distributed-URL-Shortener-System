@@ -82,7 +82,7 @@ function updateTableBody(dataList) {
             // Display server IP with time out message
             row = tableBody.insertRow();
             cellNode = row.insertCell();
-            cellNode.textContent = "Server IP: " + data.IP + " - " + data.Message;
+            cellNode.textContent = "Server IP: " + data.Node + " - " + data.Message;
             cellNode.colSpan = 15;
             cellNode.classList.add("red");
         } else {
