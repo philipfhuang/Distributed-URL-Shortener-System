@@ -54,29 +54,20 @@ function updateTable(dataList) {
     var table = document.getElementById('data-table');
     table.innerHTML = ''; // Clear table content
 
-    if (dataList.length > 0) {
-        var data = dataList[0]; // Assuming the first item in the list for demonstration
-
-        var thead = table.createTHead();
-        var tbody = table.createTBody();
-        var headRow = thead.insertRow();
-
-        // Create table headers including "Node"
-        for (var key in data.Info[0]) {
-            var th = document.createElement('th');
-            th.textContent = key;
-            headRow.appendChild(th);
-        }
-        // Add "Node" as a header
-        var thNode = document.createElement('th');
-        thNode.textContent = "Node";
-        headRow.insertBefore(thNode, headRow.firstChild);
-
-        // Add data from each item in the list to the table
-        dataList.forEach(function(data) {
+    dataList.forEach(function(data) {
+        var row;
+        var cellNode;
+        if (data.Message === "Time out") {
+            // Display server IP with time out message
+            row = table.insertRow();
+            cellNode = row.insertCell();
+            cellNode.textContent = "Server IP: " + data.Node + " - " + data.Message;
+            cellNode.colSpan = 15; // Set colSpan to cover all columns
+            cellNode.classList.add("red");
+        } else {
             data.Info.forEach(function(info) {
-                var row = tbody.insertRow();
-                var cellNode = row.insertCell();
+                row = table.insertRow();
+                cellNode = row.insertCell();
                 cellNode.textContent = data.Node;
 
                 for (var key in info) {
@@ -94,10 +85,8 @@ function updateTable(dataList) {
                     }
                 }
             });
-        });
-    } else {
-        table.innerHTML = 'No valid data available.';
-    }
+        }
+    });
 }
 
 fetchDataAndUpdateTable();

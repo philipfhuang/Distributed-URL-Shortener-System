@@ -14,15 +14,18 @@ def get_docker_nodes():
             output = subprocess.check_output(f"ssh {ip} 'docker ps -a --format json --no-trunc'", shell=True, stderr=subprocess.STDOUT, text=True, timeout=5)
             node = subprocess.check_output(f"ssh {ip} 'hostname'", shell=True, stderr=subprocess.STDOUT, text=True, timeout=5)
         except subprocess.TimeoutExpired:
-            return jsonify([{
-                "Node": ip,
-                "Info": "TIMEOUT",
-            }])
+            nodes_info.append({
+                "Node": node.strip(),
+                "Info": [],
+                "Message": "Time out",
+            })
+            continue
         outputs = output.split('\n')
         node_info = [json.loads(output) for output in outputs if output != '']
         node_infos = {
             "Node": node.strip(),
             "Info": node_info,
+            "Message": "Success",
         }
         nodes_info.append(node_infos)
     return jsonify(nodes_info)
