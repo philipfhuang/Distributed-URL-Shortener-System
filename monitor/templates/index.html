@@ -33,11 +33,32 @@
 <body>
 
 <div id="table-container">
-    <table id="data-table"></table>
+    <table id="data-table">
+        <th>
+            <tr>Node ID</tr>
+            <tr>Command</tr>
+            <tr>CreatedAt</tr>
+            <tr>Container ID</tr>
+            <tr>Image</tr>
+            <tr>Labels</tr>
+            <tr>LocalVolumes</tr>
+            <tr>Mounts</tr>
+            <tr>Names</tr>
+            <tr>Networks</tr>
+            <tr>Ports</tr>
+            <tr>RunningFor</tr>
+            <tr>Size</tr>
+            <tr>State</tr>
+            <tr>Status/tr>
+        </th>
+        <tbody id="tablebody">
+
+        </tbody>
+    </table>
 </div>
 
 <script>
-// Function to fetch data from the API and update the table
+// Fetch data from the API and update the table
 function fetchDataAndUpdateTable() {
     fetch('/get_docker_nodes')
         .then(response => response.json())
@@ -49,42 +70,50 @@ function fetchDataAndUpdateTable() {
         });
 }
 
-// Function to update the table with new data
-function updateTable(dataList) {
-    var table = document.getElementById('data-table');
-    table.innerHTML = ''; // Clear table content
+// Update the table body with new data
+function updateTableBody(dataList) {
+    var tableBody = document.getElementById('tablebody');
+    tableBody.innerHTML = ''; // Clear table body content
 
     dataList.forEach(function(data) {
         var row;
         var cellNode;
         if (data.Message === "Time out") {
             // Display server IP with time out message
-            row = table.insertRow();
+            row = tableBody.insertRow();
             cellNode = row.insertCell();
-            cellNode.textContent = "Server IP: " + data.Node + " - " + data.Message;
-            cellNode.colSpan = 15; // Set colSpan to cover all columns
+            cellNode.textContent = "Server IP: " + data.IP + " - " + data.Message;
+            cellNode.colSpan = 15;
             cellNode.classList.add("red");
         } else {
-            data.Info.forEach(function(info) {
-                row = table.insertRow();
-                cellNode = row.insertCell();
-                cellNode.textContent = data.Node;
+            if (data.Info && data.Info.length > 0) {
+                data.Info.forEach(function(info) {
+                    row = tableBody.insertRow();
+                    cellNode = row.insertCell();
+                    cellNode.textContent = data.Node;
 
-                for (var key in info) {
-                    var cell = row.insertCell();
-                    cell.textContent = info[key];
+                    for (var key in info) {
+                        var cell = row.insertCell();
+                        cell.textContent = info[key];
 
-                    if (key === "Status") {
-                        if (info[key].includes("Up")) {
-                            cell.classList.add("green");
-                        } else if (info[key].includes("unhealthy")) {
-                            cell.classList.add("yellow");
-                        } else {
-                            cell.classList.add("red");
+                        if (key === "Status") {
+                            if (info[key].includes("Up")) {
+                                cell.classList.add("green");
+                            } else if (info[key].includes("unhealthy")) {
+                                cell.classList.add("yellow");
+                            } else {
+                                cell.classList.add("red");
+                            }
                         }
                     }
-                }
-            });
+                });
+            } else {
+                // If data.Info is empty, add a row indicating lack of information
+                row = tableBody.insertRow();
+                cellNode = row.insertCell();
+                cellNode.colSpan = 15; // Assuming 15 columns
+                cellNode.textContent = "No information available";
+            }
         }
     });
 }
