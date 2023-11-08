@@ -1,127 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Docker Node Information</title>
+    <title>Monitor</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 20px 0;
-        }
-
-        h1 {
-            margin: 0;
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        #nodesTable {
+        table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
         }
-
-        #nodesTable th {
-            background-color: #333;
-            color: #fff;
+        th, td {
+            border: 1px solid #dddddd;
             text-align: left;
-            padding: 12px;
-        }
-
-        #nodesTable th,
-        #nodesTable td {
-            border: 1px solid #ccc;
-            max-width: 200px;
+            padding: 8px;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
-            padding: 8px;
         }
-
-        #nodesTable tbody tr:nth-child(even) {
-            background-color: #f5f5f5;
-        }
-
-        .status-up .status-unhealthy .status-other {
-            display: block;
-        }
-
-        .status-up {
-            background-color: green;
-        }
-
-        .status-unhealthy {
-            background-color: #F7C600 !important;
-        }
-
-        .status-other {
-            background-color: red;
+        th {
+            background-color: #f2f2f2;
         }
     </style>
 </head>
 <body>
-<main>
-    <table id="nodesTable">
-        <thead>
-        <tr>
-            <th>NODE ID</th>
-            <th>CONTAINER ID</th>
-            <th>IMAGE</th>
-            <th>COMMAND</th>
-            <th>CREATED</th>
-            <th>STATUS</th>
-            <th>PORTS</th>
-        </tr>
-        </thead>
-        <tbody id="nodesInfo"></tbody>
-    </table>
-</main>
+
+<div id="table-container">
+    <table id="data-table"></table>
+</div>
+
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        getNodeInfo(); // Fetch initially
-        setInterval(getNodeInfo, 5000); // Fetch every 5 seconds
-    });
-
-    function getNodeInfo() {
-        fetch('/get_docker_nodes') // Replace this with your actual endpoint to get Docker node info from the backend
-            .then(response => response.json())
-            .then(data => updateNodesTable(data))
-            .catch(error => console.error('Error:', error));
-    }
-
-    function updateNodesTable(nodes) {
-        const nodesInfoContainer = document.getElementById('nodesInfo');
-        nodesInfoContainer.innerHTML = ''; // Clear previous content
-
-        nodes.forEach(node => {
-            const row = document.createElement('tr');
-            Object.keys(node).forEach(key => {
-                const cell = document.createElement('td');
-                cell.textContent = node[key];
-                if (key === 'status') {
-                    const statusValue = node[key].toLowerCase();
-                    console.log(statusValue);
-                    if (statusValue.includes('unhealthy')) {
-                        cell.classList.add('status-unhealthy');
-                    } else if (statusValue.includes('up')) {
-                        cell.classList.add('status-up');
-                    } else {
-                        cell.classList.add('status-other');
-                    }
-                }
-                row.appendChild(cell);
-            });
-            nodesInfoContainer.appendChild(row);
+// Function to fetch data from the API and update the table
+function fetchDataAndUpdateTable() {
+    fetch('/get_docker_nodes')
+        .then(response => response.json())
+        .then(dataList => {
+            updateTable(dataList);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
         });
+}
+
+// Function to update the table with new data
+function updateTable(dataList) {
+    var table = document.getElementById('data-table');
+    table.innerHTML = ''; // Clear table content
+
+    if (dataList.length > 0) {
+        var data = dataList[0]; // Assuming the first item in the list for demonstration
+
+        var thead = table.createTHead();
+        var tbody = table.createTBody();
+        var headRow = thead.insertRow();
+
+        // Create table headers including "Node"
+        for (var key in data.Info[0]) {
+            var th = document.createElement('th');
+            th.textContent = key;
+            headRow.appendChild(th);
+        }
+        // Add "Node" as a header
+        var thNode = document.createElement('th');
+        thNode.textContent = "Node";
+        headRow.insertBefore(thNode, headRow.firstChild);
+
+        // Add data from each item in the list to the table
+        dataList.forEach(function(data) {
+            data.Info.forEach(function(info) {
+                var row = tbody.insertRow();
+                var cellNode = row.insertCell();
+                cellNode.textContent = data.Node;
+
+                for (var key in info) {
+                    var cell = row.insertCell();
+                    cell.textContent = info[key];
+                }
+            });
+        });
+    } else {
+        table.innerHTML = 'No valid data available.';
     }
+}
+
+fetchDataAndUpdateTable();
+setInterval(fetchDataAndUpdateTable, 5000);
+
 </script>
 </body>
 </html>
