@@ -49,7 +49,7 @@
             <tr>RunningFor</tr>
             <tr>Size</tr>
             <tr>State</tr>
-            <tr>Status/tr>
+            <tr>Status</tr>
         </th>
         <tbody id="tablebody">
 
@@ -63,7 +63,7 @@ function fetchDataAndUpdateTable() {
     fetch('/get_docker_nodes')
         .then(response => response.json())
         .then(dataList => {
-            updateTable(dataList);
+            updateTableBody(dataList);
         })
         .catch(error => {
             console.error('Error fetching data:', error);
