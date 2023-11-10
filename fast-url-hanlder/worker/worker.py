@@ -28,7 +28,7 @@ def process_messages():
     counter = 0
     while True:
         try:
-            messages = master.xreadgroup(group_name, hostname, {stream_name: '>'}, count=100, block=1000)
+            messages = master.xreadgroup(group_name, hostname, {stream_name: '>'}, count=100, block=0)
             for message in messages:
                 msg_id, data = message
                 short_url = data['short_url']
