@@ -41,7 +41,7 @@ def process_messages():
                 print("msg: ", message)
         except Exception:
             pass
-        print("counter: ", i)
+        print("counter: ", counter)
 
 
 if __name__ == '__main__':
