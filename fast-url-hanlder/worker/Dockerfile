@@ -11,4 +11,4 @@ RUN rm -rf /var/lib/apt/lists/*
 
 EXPOSE 80
 
-CMD ["python", "worker.py"]
+CMD ["python", "-u", "worker.py"]

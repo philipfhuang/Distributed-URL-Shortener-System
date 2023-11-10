@@ -11,5 +11,5 @@ RUN rm -rf /var/lib/apt/lists/*
 
 EXPOSE 80
 
-CMD ["python3", "logger.py"]
+CMD ["python3", "-u", "logger.py"]
 
