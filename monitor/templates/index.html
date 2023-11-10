@@ -48,6 +48,7 @@
         .status-item {
             display: inline-block;
             margin: 0 10px;
+            margin-bottom: 0;
             padding: 10px 20px;
             border-radius: 5px;
             font-weight: bold;
@@ -89,6 +90,16 @@
 </head>
 <body>
 
+
+<div class="status-container">
+    <div class="status-label">Status</div>
+    <div>
+        <div class="status-item darkgreen">Healthy</div>
+        <div class="status-item green">Up</div>
+        <div class="status-item yellow">Unhealthy</div>
+        <div class="status-item red">Down</div>
+    </div>
+</div>
 <div id="table-container">
     <table id="data-table">
         <tr>
@@ -114,15 +125,7 @@
             </tr>
         </tbody>
     </table>
-    <div class="status-container">
-        <div class="status-label">Status</div>
-        <div>
-            <div class="status-item darkgreen">Healthy</div>
-            <div class="status-item green">Up</div>
-            <div class="status-item yellow">Unhealthy</div>
-            <div class="status-item red">Down</div>
-        </div>
-    </div>
+    
 </div>
 
 <script>
