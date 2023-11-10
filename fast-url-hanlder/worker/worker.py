@@ -39,8 +39,8 @@ def process_messages():
 
                 counter += 1
                 print(f"msg: {message} counter: {counter}")
-        except Exception:
-            pass
+        except Exception as e:
+            print(e)
         print("counter: ", counter)
 
 
