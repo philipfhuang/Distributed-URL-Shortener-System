@@ -1,6 +1,8 @@
 import redis
+import socket
 from cassandra.cluster import Cluster
 
+hostname = socket.gethostname()
 master = redis.Redis(host='redis-primary', port=6379)
 slave = redis.Redis(host='redis-replica', port=6379)
 
@@ -25,7 +27,7 @@ except redis.exceptions.ResponseError as e:
 def process_messages():
     while True:
         try:
-            messages = master.xreadgroup(group_name, 'consumer', {stream_name: '>'}, count=5, block=1000)
+            messages = master.xreadgroup(group_name, hostname, {stream_name: '>'}, count=100, block=1000)
             for message in messages:
                 msg_id, data = message
                 short_url = data['short_url']
