@@ -44,12 +44,12 @@ services:
       replicas: 4
     depends_on:
       - redis-primary
-#    healthcheck:
-#      test: ["CMD-SHELL", "pgrep -f worker.py > /dev/null; if [ $$? -eq 0 ]; then exit 0; else exit 1; fi"]
-#      interval: 5s
-#      timeout: 5s
-#      retries: 2
-#      start_period: 10s
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f worker.py > /dev/null; if [ $$? -eq 0 ]; then exit 0; else exit 1; fi"]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
 
   logger:
     image: sjwsteven/url-handler:logger
