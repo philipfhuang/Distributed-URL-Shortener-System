@@ -11,11 +11,11 @@ def get_docker_nodes():
     ips = sys.argv[1:]
     for ip in ips:
         try:
-            state_command = f'sshpass -p daniuwang ssh student@{ip} "docker ps -a --format json --no-trunc" -o StrictHostKeyChecking=no'
-            result = subprocess.run(state_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            state_command = f'sshpass -p daniuwang ssh -o StrictHostKeyChecking=no student@{ip} "docker ps -a --format json --no-trunc"'
+            result = subprocess.run(state_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
             output = result.stdout.decode('utf-8')
-            hostname_command = f'sshpass -p daniuwang ssh student@{ip} "hostname" -o StrictHostKeyChecking=no'
-            result = subprocess.run(hostname_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            hostname_command = f'sshpass -p daniuwang ssh -o StrictHostKeyChecking=no student@{ip} "hostname"'
+            result = subprocess.run(hostname_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
             node = result.stdout.decode('utf-8')
         except Exception:
             nodes_info.append({
