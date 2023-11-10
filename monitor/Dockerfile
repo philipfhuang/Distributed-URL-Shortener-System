@@ -6,6 +6,7 @@ ADD . /app
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 RUN apt-get update
 RUN apt-get install -y openssh-client
+RUN apt-get install -y sshpass
 
 EXPOSE 80
 
