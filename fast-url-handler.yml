@@ -24,6 +24,7 @@ services:
     volumes:
       - ~/data/redis:/data
     deploy:
+      replicas: 2
       restart_policy:
         condition: on-failure
       placement:
@@ -40,6 +41,7 @@ services:
   worker:
     image: sjwsteven/url-handler:worker
     deploy:
+      replicas: 4
       restart_policy:
         condition: on-failure
     depends_on:
@@ -50,6 +52,7 @@ services:
     ports:
       - "8081:5000"
     deploy:
+      replicas: 3
       restart_policy:
         condition: on-failure
     depends_on:
