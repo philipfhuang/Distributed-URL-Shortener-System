@@ -32,7 +32,6 @@ def process_messages():
                 for message in stream_message:
 
                     msg_id, data = message
-                    print(message)
 
                     short_url = data[b'short_url'].decode('utf-8')
                     long_url = data[b'long_url'].decode('utf-8')
@@ -43,7 +42,7 @@ def process_messages():
                     counter += 1
         except Exception as e:
             print(e)
-        print("counter: ", counter)
+        print("Message Processed: ", counter)
 
 
 if __name__ == '__main__':
