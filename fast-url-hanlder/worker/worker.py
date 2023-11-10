@@ -20,7 +20,7 @@ except redis.exceptions.ResponseError as e:
     if "BUSYGROUP Consumer Group name already exists" in str(e):
         print("Consumer group already exists.")
     else:
-        raise e
+        print(e)
 
 
 def process_messages():
