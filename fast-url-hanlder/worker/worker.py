@@ -25,7 +25,9 @@ except redis.exceptions.ResponseError as e:
 
 
 def process_messages():
+    i = 0
     while True:
+        i += 1
         try:
             messages = master.xreadgroup(group_name, hostname, {stream_name: '>'}, count=100, block=1000)
             for message in messages:
@@ -37,6 +39,7 @@ def process_messages():
                 master.xack(stream_name, group_name, msg_id)
         except Exception:
             pass
+        print("iter: ", i)
 
 
 if __name__ == '__main__':
