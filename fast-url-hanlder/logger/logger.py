@@ -12,7 +12,7 @@ file_name = "appendonlylog"
 file_path = os.path.join(home_directory, relative_path, file_name)
 
 try:
-    log = open(file_path, "a+")
+    log = open("appendonlylog", "a+")
 except Exception:
     print("could not open log file")
     exit(1)
