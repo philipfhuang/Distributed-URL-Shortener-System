@@ -19,6 +19,9 @@
         th {
             background-color: #f2f2f2;
         }
+        .darkgreen {
+            background-color: #388E3C;
+        }
         .green {
             background-color: #8BC34A;
         }
@@ -63,6 +66,10 @@
             </tr>
         </tbody>
     </table>
+    <div class="darkgreen">healthy</div>
+    <div class="green">Up</div>
+    <div class="yellow">unhealthy</div>
+    <div class="red">Down</div>
 </div>
 
 <script>
@@ -105,11 +112,13 @@ function updateTableBody(dataList) {
                         cell.textContent = info[key];
 
                         if (key === "Status") {
-                            if (info[key].includes("Up")) {
-                                cell.classList.add("green");
-                            } else if (info[key].includes("unhealthy")) {
+                            if (info[key].includes("unhealthy")) {
                                 cell.classList.add("yellow");
-                            } else {
+                            } else if (info[key].includes("healthy")) {
+                                cell.classList.add("darkgreen");
+                            } else if (info[key].includes("Up")) {
+                                cell.classList.add("green");
+                            }else {
                                 cell.classList.add("red");
                             }
                         }
