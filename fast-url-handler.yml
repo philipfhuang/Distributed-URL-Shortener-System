@@ -42,8 +42,6 @@ services:
     image: sjwsteven/url-handler:worker
     deploy:
       replicas: 4
-      restart_policy:
-        condition: on-failure
     depends_on:
       - redis-primary
     healthcheck:
@@ -52,6 +50,17 @@ services:
       timeout: 5s
       retries: 2
       start_period: 10s
+
+  logger:
+    image: sjwsteven/url-handler:logger
+    depends_on:
+      -redis-primary
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+ 
 
   fast-handler:
     image: sjwsteven/url-handler:fast

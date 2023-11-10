@@ -25,6 +25,7 @@ def save_long_url():
     try:
         master.set(short_url, long_url)
         master.xadd('url_stream', {'short_url': short_url, 'long_url': long_url})
+        master.xadd('log_stream', {'short_url': short_url, 'long_url': long_url})
         return 'Accepted', 202
     except Exception as e:
         app.logger.error(f"Failed to add to stream: {e}")

@@ -14,7 +14,7 @@ file_path = os.path.join(home_directory, relative_path, file_name)
 
 
 try:
-    log = open("appendonlylog", "a+")
+    log = open(file_path, "a+")
 except Exception:
     print("could not open log file")
     exit(1)
