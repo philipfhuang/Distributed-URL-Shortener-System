@@ -53,11 +53,3 @@ services:
       timeout: 5s
       retries: 2
       start_period: 10s
-
-  # monitor:
-  #   image: sjwsteven/monitor:latest
-  #   ports:
-  #     - "8080:5001"
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure 
