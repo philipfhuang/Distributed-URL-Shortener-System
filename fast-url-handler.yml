@@ -53,8 +53,10 @@ services:
 
   logger:
     image: sjwsteven/url-handler:logger
+    volumes:
+      - ~/data/redis:/data
     depends_on:
-      -redis-primary
+      - redis-primary
     deploy:
       restart_policy:
         condition: on-failure

@@ -11,8 +11,6 @@ file_name = "appendonlylog"
 
 file_path = os.path.join(home_directory, relative_path, file_name)
 
-
-
 try:
     log = open(file_path, "a+")
 except Exception:
@@ -36,7 +34,7 @@ def process_messages():
     print('running')
     while True:
         try:
-            messages = master.xreadgroup(group_name, 'log_consumer', {stream_name: '>'}, count=5, block=1000)
+            messages = master.xreadgroup(group_name, 'log_consumer', {stream_name: '>'}, count=100, block=1000)
             for message in messages:
                 msg_id, data = message
                 short_url = data['short_url']
@@ -50,7 +48,6 @@ def process_messages():
             pass
         finally:
             log.close()
-
 
 
 if __name__ == '__main__':
