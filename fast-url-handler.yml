@@ -75,7 +75,7 @@ services:
   monitor:
     image: sjwsteven/monitor:latest
     ports:
-     - "8080:5001"
+     - "8080:8080"
     deploy:
       restart_policy:
         condition: on-failure
