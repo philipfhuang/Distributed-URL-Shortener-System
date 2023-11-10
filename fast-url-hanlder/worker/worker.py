@@ -25,9 +25,8 @@ except redis.exceptions.ResponseError as e:
 
 
 def process_messages():
-    i = 0
+    counter = 0
     while True:
-        i += 1
         try:
             messages = master.xreadgroup(group_name, hostname, {stream_name: '>'}, count=100, block=1000)
             for message in messages:
@@ -37,9 +36,11 @@ def process_messages():
 
                 session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
                 master.xack(stream_name, group_name, msg_id)
+
+                counter += 1
         except Exception:
             pass
-        print("iter: ", i)
+        print("counter: ", i)
 
 
 if __name__ == '__main__':
