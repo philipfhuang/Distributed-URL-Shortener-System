@@ -11,15 +11,19 @@ def get_docker_nodes():
     ips = sys.argv[1:]
     for ip in ips:
         try:
-            state_command = f'sshpass -p daniuwang ssh -o StrictHostKeyChecking=no student@{ip} "docker ps -a --format json --no-trunc"'
-            result = subprocess.run(state_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-            output = result.stdout.decode('utf-8')
             hostname_command = f'sshpass -p daniuwang ssh -o StrictHostKeyChecking=no student@{ip} "hostname"'
-            result = subprocess.run(hostname_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-            node = result.stdout.decode('utf-8')
+            result = subprocess.run(hostname_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=2)
+            node = result.stdout.decode('utf-8').strip()
+        except Exception:
+            node = ip
+            
+        try:
+            state_command = f'sshpass -p daniuwang ssh -o StrictHostKeyChecking=no student@{ip} "docker ps -a --format json --no-trunc"'
+            result = subprocess.run(state_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=2)
+            output = result.stdout.decode('utf-8')
         except Exception:
             nodes_info.append({
-                "Node": ip,
+                "Node": node,
                 "Info": [],
                 "Message": "Time out",
             })
@@ -27,7 +31,7 @@ def get_docker_nodes():
         outputs = output.split('\n')
         node_info = [json.loads(output) for output in outputs if output != '']
         node_infos = {
-            "Node": node.strip(),
+            "Node": node,
             "Info": node_info,
             "Message": "Success",
         }
