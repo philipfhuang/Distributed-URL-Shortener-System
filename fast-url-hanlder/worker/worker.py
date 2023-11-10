@@ -29,11 +29,9 @@ def process_messages():
     while True:
         try:
             messages = master.xreadgroup(group_name, hostname, {stream_name: '>'}, count=100, block=0)
-            print(messages)
             for message in messages:
                 msg_id, data = message
                 print(message)
-                print(data)
                 short_url = data['short_url']
                 long_url = data['long_url']
 
