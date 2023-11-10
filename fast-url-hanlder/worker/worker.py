@@ -29,17 +29,19 @@ def process_messages():
     while True:
         try:
             messages = master.xreadgroup(group_name, hostname, {stream_name: '>'}, count=100, block=0)
-            for message in messages:
-                msg_id, data = message
-                print(message)
-                short_url = data['short_url']
-                long_url = data['long_url']
+            for stream, stream_message in messages:
+                for message in stream_message:
 
-                session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
-                master.xack(stream_name, group_name, msg_id)
+                    msg_id, data = message
+                    print(message)
 
-                counter += 1
-                print(f"msg: {message} counter: {counter}")
+                    short_url = data[b'short_url'].decode('utf-8')
+                    long_url = data[b'long_url'].decode('utf-8')
+
+                    session.execute("INSERT INTO urls (short_url, long_url) VALUES (%s, %s)", (short_url, long_url))
+                    master.xack(stream_name, group_name, msg_id)
+
+                    counter += 1
         except Exception as e:
             print(e)
         print("counter: ", counter)
