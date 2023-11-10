@@ -38,6 +38,7 @@ def process_messages():
                 master.xack(stream_name, group_name, msg_id)
 
                 counter += 1
+                print("msg: ", message)
         except Exception:
             pass
         print("counter: ", i)
