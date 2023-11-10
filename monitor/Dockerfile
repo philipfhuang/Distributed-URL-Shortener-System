@@ -10,4 +10,4 @@ RUN apt-get install -y sshpass
 
 EXPOSE 80
 
-CMD ["python", "monitor.py"]
+CMD ["python", "monitor.py", "10.128.1.42", "10.128.2.42", "10.128.3.42", "10.128.4.42"]
