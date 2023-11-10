@@ -51,7 +51,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 2
-      start_period: 40s
+      start_period: 30s
 
   logger:
     image: sjwsteven/url-handler:logger
