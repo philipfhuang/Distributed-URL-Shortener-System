@@ -56,7 +56,7 @@ services:
   logger:
     image: sjwsteven/url-handler:logger
     volumes:
-      - ~/data/logs:~/logs
+      - ~/data/logs:/root/logs
     depends_on:
       - redis-primary
     deploy:
