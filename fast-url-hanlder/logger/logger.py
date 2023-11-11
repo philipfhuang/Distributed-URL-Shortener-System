@@ -3,15 +3,10 @@ import os
 
 master = redis.Redis(host='redis-primary', port=6379)
 
-#try:
-#    log = open("appendonlylog", "a+")
-#except Exception:
-#    print("could not open log file")
-
 stream_name = 'log_stream'
 group_name = 'log_group'
 data_dir = '/app/data'
-os.makedirs(data_dir, exist_ok=True)
+#os.makedirs(data_dir, exist_ok=True)
 
 try:
     master.xgroup_create(stream_name, group_name, id='0', mkstream=True)
@@ -27,7 +22,8 @@ def process_messages():
     while True:
         try:
             messages = master.xreadgroup(group_name, 'log_consumer', {stream_name: '>'}, count=100, block=1000)
-            with open(os.path.join(data_dir, 'appendonlylog'), 'a+') as log:    
+            with open(os.path.join(data_dir, "logfile"), 'a+') as log:
+                log.write("writing... ")
                 for stream, stream_message in messages:
                     for message in stream_message:
                         msg_id, data = message
