@@ -3,7 +3,7 @@ services:
 
   redis-primary:
     image: redis:7.2.2
-    command: redis-server --appendonly yes --maxmemory 8mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
     volumes:
       - ~/data/redis:/data
     deploy:
