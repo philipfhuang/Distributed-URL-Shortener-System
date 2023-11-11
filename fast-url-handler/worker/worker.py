@@ -1,5 +1,6 @@
 import redis
 import socket
+import time
 from cassandra.cluster import Cluster
 
 hostname = socket.gethostname()
@@ -22,9 +23,11 @@ except Exception as e:
 
 def process_messages():
     counter = 0
+    total_time = 0
     while True:
         try:
             messages = master.xreadgroup(group_name, hostname, {stream_name: '>'}, count=100, block=0)
+            start_time = time.time()
             for stream, stream_message in messages:
                 for message in stream_message:
 
@@ -37,9 +40,12 @@ def process_messages():
                     master.xack(stream_name, group_name, msg_id)
 
                     counter += 1
+            end_time = time.time()
+            total_time += end_time - start_time
         except Exception as e:
             print(e)
         print("Message Processed: ", counter)
+        print("Total Time: ", total_time)
 
 
 if __name__ == '__main__':
