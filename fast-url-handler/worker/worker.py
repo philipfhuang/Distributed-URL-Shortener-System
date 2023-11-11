@@ -17,10 +17,7 @@ group_name = 'url_group'
 try:
     master.xgroup_create(stream_name, group_name, id='0', mkstream=True)
 except Exception as e:
-    if "BUSYGROUP Consumer Group name already exists" in str(e):
-        print("Consumer group already exists.")
-    else:
-        print(e)
+    print(e)
 
 
 def process_messages():

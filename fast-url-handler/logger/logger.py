@@ -11,16 +11,13 @@ data_dir = '/root/logs'
 try:
     master.xgroup_create(stream_name, group_name, id='0', mkstream=True)
 except Exception as e:
-    if "BUSYGROUP Consumer Group name already exists" in str(e):
-        print("Consumer group already exists.")
-    else:
-        print(e)
+    print(e)
 
 
 def process_messages():
     while True:
         try:
-            messages = master.xreadgroup(group_name, 'log_consumer', {stream_name: '>'}, count=100, block=1000)
+            messages = master.xreadgroup(group_name, 'log_consumer', {stream_name: '>'}, count=100, block=0)
             with open(os.path.join(data_dir, "logfile"), 'a+') as log:
                 for stream, stream_message in messages:
                     for message in stream_message:
