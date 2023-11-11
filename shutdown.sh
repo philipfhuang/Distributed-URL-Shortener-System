@@ -6,6 +6,6 @@ if [ "$#" == "0" ]; then
 	exit 1
 fi
 
-./cassandra/startCluster $@
+./cassandra/stopCluster $@
 
 docker service rm $(docker service ls -q)
