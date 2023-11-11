@@ -6,11 +6,11 @@ master = redis.Redis(host='redis-primary', port=6379)
 
 stream_name = 'log_stream'
 group_name = 'log_group'
-data_dir = '~/logs'
+data_dir = '/root/logs'
 
 try:
     master.xgroup_create(stream_name, group_name, id='0', mkstream=True)
-except redis.exceptions.ResponseError as e:
+except Exception as e:
     if "BUSYGROUP Consumer Group name already exists" in str(e):
         print("Consumer group already exists.")
     else:
