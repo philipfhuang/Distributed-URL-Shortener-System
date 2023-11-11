@@ -64,6 +64,12 @@ services:
         condition: on-failure
       placement:
         constraints: [node.role == manager]
+    healthcheck:
+      test: [ "CMD-SHELL", "pgrep -f logger.py > /dev/null; if [ $$? -eq 0 ]; then exit 0; else exit 1; fi" ]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+      start_period: 30s
  
 
   fast-handler:

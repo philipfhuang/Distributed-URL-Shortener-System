@@ -5,7 +5,7 @@ ADD . /app
 
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 RUN apt-get update
-RUN apt-get install -y curl
+RUN apt-get install -y procps
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 RUN mkdir ~/logs
