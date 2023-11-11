@@ -29,7 +29,7 @@ def process_messages():
                         short_url = data[b'short_url'].decode('utf-8')
                         long_url = data[b'long_url'].decode('utf-8')
 
-                        log.write(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] short: {short_url},    long: {long_url}')
+                        log.write(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}]   short: {short_url},   long: {long_url}\n')
 
                         master.xack(stream_name, group_name, msg_id)
         except Exception as e:
