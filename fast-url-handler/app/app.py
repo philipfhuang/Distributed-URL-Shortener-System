@@ -26,10 +26,10 @@ def save_long_url():
         master.set(short_url, long_url)
         master.xadd('url_stream', {'short_url': short_url, 'long_url': long_url})
         master.xadd('log_stream', {'short_url': short_url, 'long_url': long_url})
-        return 'Accepted', 202
+        return 'accepted', 200
     except Exception as e:
-        app.logger.error(f"Failed to add to stream: {e}")
-        return 'Internal Server Error', 500
+        print(e)
+        return 'internal server error', 500
 
 
 @app.route('/', methods=['GET'])
