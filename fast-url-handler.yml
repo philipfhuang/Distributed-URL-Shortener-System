@@ -77,7 +77,7 @@ services:
     ports:
       - "8081:5000"
     deploy:
-      replicas: 3
+      replicas: 4
       restart_policy:
         condition: on-failure
     depends_on:
