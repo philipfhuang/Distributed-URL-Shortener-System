@@ -9,6 +9,6 @@ fi
 COMMAND=$(ssh student@$1 docker swarm leave --force > /dev/null 2>&1; docker swarm init --advertise-addr $1 | grep "docker swarm" | head -n 1)
 shift
 while (( "$#" )); do
-    ssh student@$1 "docker swarm leave --force > /dev/null; $COMMAND"
+    ssh student@$1 "docker swarm leave --force; $COMMAND"
     shift
 done
