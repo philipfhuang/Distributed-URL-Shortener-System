@@ -6,6 +6,7 @@ if [ "$#" == "0" ]; then
 	exit 1
 fi
 
+./start_docker_swarm.sh $@
 ./cassandra/startCluster $@
 
 
