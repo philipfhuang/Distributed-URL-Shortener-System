@@ -27,11 +27,18 @@ To deploy the system locally or in a production environment, ensure Docker is in
 To get started with the system, clone the repository and follow the setup instructions in the `README.md` file. Make sure you have Docker, Cassandra, and Redis installed and configured correctly.
 
 ## Usage
+
 To use without docker swarm:
 ```bash
 ./autostart.sh [IP1] [IP2] [IP3] ...
 ```
+
 To use with docker swarm:
 ```bash
 ./fastautostart.sh [IP1] [IP2] [IP3] ...
+```
+
+To shutdown everything:
+```bash
+./shutdown
 ```
